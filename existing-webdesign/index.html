@@ -1,0 +1,930 @@
+
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>Baca Di Tebet - Perpustakaan & Ruang Kreatif</title>
+  <meta name="description" content="Perpustakaan, Library, Ruang Temu, Ruang Kreatif, Buku, Baca Buku, BDT, Baca di Tebet, Creative Space, Ruang Pikir, Ruang Baca" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="images/bdt-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .animate-fade-in {
+      animation: fade-in 0.5s ease-out forwards;
+    }
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="bg-[#FDFBF7] text-slate-800 font-sans">
+  <div id="top"></div>
+
+  <nav data-navbar class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent py-6">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <button type="button" data-scroll-top class="flex items-center gap-2">
+        <img src="images/bdt-logo.png" alt="Baca Di Tebet Logo" class="h-14" />
+      </button>
+
+      <div class="md:hidden">
+        <button type="button" data-menu-toggle class="text-slate-800" aria-expanded="false" aria-label="Toggle menu">
+          <i data-menu-icon="open" data-lucide="menu" class="w-7 h-7"></i>
+          <i data-menu-icon="close" data-lucide="x" class="w-7 h-7 hidden"></i>
+        </button>
+      </div>
+    </div>
+
+    <div data-mobile-menu class="md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4 px-6 flex flex-col gap-4 border-t border-slate-100 hidden">
+      <button type="button" data-nav-link data-tab-target="about" data-scroll="true" class="text-left text-slate-700 font-medium py-2 border-b border-slate-50">Tentang Kami</button>
+      <button type="button" data-nav-link data-tab-target="facilities" data-scroll="true" class="text-left text-slate-700 font-medium py-2 border-b border-slate-50">Fasilitas</button>
+      <button type="button" data-nav-link data-tab-target="pricing" data-scroll="true" class="text-left text-slate-700 font-medium py-2 border-b border-slate-50">Pendaftaran</button>
+      <button type="button" data-nav-link data-tab-target="agenda" data-scroll="true" class="text-left text-slate-700 font-medium py-2 border-b border-slate-50">Agenda</button>
+      <button type="button" data-nav-link data-tab-target="blog" data-scroll="true" class="text-left text-slate-700 font-medium py-2 border-b border-slate-50">Blog</button>
+      <button type="button" data-nav-link data-tab-target="contact" data-scroll="true" class="text-left text-slate-700 font-medium py-2 border-b border-slate-50">Kontak</button>
+      <button type="button" data-tab-target="pricing" data-scroll="true" class="bg-teal-700 text-white text-center py-3 rounded-lg font-medium w-full">Daftar Anggota</button>
+    </div>
+  </nav>
+
+  <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#F9F7F2]">
+    <div class="absolute top-0 right-0 w-1/2 h-full bg-teal-50 opacity-60 skew-x-12 translate-x-20 z-0 hidden lg:block"></div>
+    <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-teal-100/60 blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <div class="w-full lg:w-1/2">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-teal-100 text-teal-800 rounded-full text-xs font-bold tracking-wider mb-6 uppercase">
+            <i data-lucide="heart" class="w-3 h-3"></i>
+            Ruang untuk Tumbuh Bersama
+          </div>
+          <h1 class="font-serif text-4xl md:text-5xl lg:text-7xl font-bold text-slate-900 leading-tight mb-6">
+            Di Mana <span class="text-teal-700 italic">Waktu Berhenti</span> dan Pikiran Mulai
+          </h1>
+          <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+            Karena tidak semua yang berharga harus cepat. Di tengah hiruk-pikuk Jakarta, kami hadirkan ruang untuk
+            <span class="font-semibold text-slate-800">berpikir tenang, membaca mendalam, dan bertumbuh bersama</span>.
+            Lebih dari perpustakaan—ini adalah rumah kedua untuk jiwa pencari ilmu.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button type="button" data-tab-target="pricing" data-scroll="true" class="px-8 py-4 bg-teal-700 text-white rounded-lg font-medium hover:bg-teal-800 transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200">
+              Gabung Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            <button type="button" data-tab-target="facilities" data-scroll="true" class="px-8 py-4 bg-white border border-slate-300 text-slate-800 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="eye" class="w-4 h-4 text-teal-600"></i> Lihat Ruangan
+            </button>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 relative hidden md:block">
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500">
+            <img src="images/3_baca_di_tebet_web.png" alt="Suasana Baca Di Tebet" class="w-full h-auto object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+          </div>
+          <div class="absolute -z-10 top-10 -right-10 w-full h-full border-2 border-teal-200 rounded-2xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main-content" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
+    <div class="flex flex-wrap justify-center gap-2 mb-16">
+      <button type="button" data-tab-button data-tab-target="about" class="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-teal-700 text-white shadow-lg scale-105">
+        <i data-lucide="book-open" class="w-4 h-4"></i>
+        <span class="hidden md:inline">Tentang Kami</span>
+        <span class="md:hidden">Tentang</span>
+      </button>
+      <button type="button" data-tab-button data-tab-target="facilities" class="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-slate-500 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="wifi" class="w-4 h-4"></i>
+        <span class="hidden md:inline">Fasilitas</span>
+        <span class="md:hidden">Fasilitas</span>
+      </button>
+      <button type="button" data-tab-button data-tab-target="pricing" class="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-slate-500 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="credit-card" class="w-4 h-4"></i>
+        <span class="hidden md:inline">Daftar Anggota</span>
+        <span class="md:hidden">Daftar</span>
+      </button>
+      <button type="button" data-tab-button data-tab-target="agenda" class="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-slate-500 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span class="hidden md:inline">Agenda</span>
+        <span class="md:hidden">Agenda</span>
+      </button>
+      <button type="button" data-tab-button data-tab-target="blog" class="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-slate-500 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="message-circle" class="w-4 h-4"></i>
+        <span class="hidden md:inline">Blog</span>
+        <span class="md:hidden">Blog</span>
+      </button>
+      <button type="button" data-tab-button data-tab-target="contact" class="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-slate-500 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="map-pin" class="w-4 h-4"></i>
+        <span class="hidden md:inline">Kontak</span>
+        <span class="md:hidden">Kontak</span>
+      </button>
+    </div>
+
+    <div class="min-h-[500px]">
+      <section data-tab-panel="about" class="animate-fade-in">
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+          <div class="relative order-2 md:order-1">
+            <div class="absolute -top-4 -left-4 w-24 h-24 bg-teal-100 rounded-full -z-10"></div>
+            <img src="images/ruang_baca.jpeg" alt="Interior Perpustakaan" class="rounded-2xl shadow-xl w-full object-cover h-[400px]" />
+            <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg max-w-xs hidden md:block">
+              <p class="font-serif text-lg italic text-slate-800">"Rendang yang nikmat tidak jadi dalam semalam. Begitu juga dengan pengetahuan, butuh proses panjang untuk meresap."</p>
+            </div>
+          </div>
+
+          <div class="order-1 md:order-2">
+            <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-900 mb-6">Salam Daya Baca</h2>
+            <div class="space-y-4 text-slate-600 leading-relaxed text-justify">
+              <p>
+                BDT hadir sebagai alternatif dari ruang-ruang publik yang bersifat konsumeristik. Di saat dunia tergila-gila dengan kecanggihan dunia virtual. kami memilih menghadirkan sebuah ruang berbentuk perpustakaan fisik. Di tengah masyarakat yang mengglorifikasi kehidupan instan serta berorientasi pada hasil yang lebih penting daripada proses, kami mengajak masyarakat untuk berproses, dimulai dari membaca buku konvensional. Pengingat bahwa nasi yang ada di piring tidak terjadi begitu saja sebagaimana di dunia virtual. Ada proses panjang, mulai dari menanam padi hingga memasaknya. Seperti itu juga saat kita membaca sebuah buku, membaca satu persatu kata dari judul hingga penutup.
+              </p>
+              <p>
+                BDT merupakan simbol pengingat bahwa selama masih memiliki raga, manusia tidak bisa terlepas dari proses manual. Dunia virtual tidak akan menghilangkan kebutuhan kita akan hal-hal dasar seperti makan, tidur, dan bernapas. Selain itu manusia sebagai makhluk sosial akan selalu membutuhkan interaksi tanpa sekat virtual. <span class="font-medium text-teal-800">BDT bukan sekadar perpustakaan untuk menyimpan buku, tetapi untuk menyimpan, merawat dan mengembangkan pengetahuan.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-tab-panel="facilities" class="animate-fade-in hidden">
+        <div class="text-center mb-12">
+          <h2 class="font-serif text-3xl font-bold text-slate-900 mb-4">Fasilitas dan Ruangan</h2>
+          <p class="text-slate-600 max-w-2xl mx-auto">
+            Dari zona hening untuk kontemplasi hingga ruang diskusi yang hidup. Semua ruangan dilengkapi AC, WiFi kencang, dan colokan listrik.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src="images/ruang_diskusi.jpeg" alt="Ruang Diskusi" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Lantai 1</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Social</span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-teal-700">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <h3 class="font-serif text-xl font-bold text-slate-800">Ruang Diskusi</h3>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-1">
+                Terletak di lantai 1, area ini menyatu dengan kafe. Cocok untuk ngobrol santai sambil menikmati kopi.
+              </p>
+            </div>
+          </div>
+
+          <div class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src="images/ruang_RBBJ.jpeg" alt="Ruang Roy B.B Janis" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Event</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Piano</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Kapasitas 50</span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-teal-700">
+                <i data-lucide="music" class="w-5 h-5"></i>
+                <h3 class="font-serif text-xl font-bold text-slate-800">Ruang Roy B.B Janis</h3>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-1">
+                Area terbesar (kapasitas 30-50 orang). Bisa untuk kerja, main piano, atau sewa event bedah buku dan konser mini.
+              </p>
+            </div>
+          </div>
+
+          <div class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src="images/ruang_baca.jpeg" alt="Ruang Baca" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Quiet Zone</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Fokus</span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-teal-700">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+                <h3 class="font-serif text-xl font-bold text-slate-800">Ruang Baca (Hening)</h3>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-1">
+                Zona hening total. Dilarang bicara dan makan. Hanya untuk membaca fokus dan belajar. Disediakan air minum.
+              </p>
+            </div>
+          </div>
+
+          <div class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src="images/ruang_pikir.jpeg" alt="Ruang Pikir" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Premium</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Meeting</span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-teal-700">
+                <i data-lucide="battery-charging" class="w-5 h-5"></i>
+                <h3 class="font-serif text-xl font-bold text-slate-800">Ruang Pikir</h3>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-1">
+                Ruangan favorit dengan dinding penuh buku dan meja marmer. Zona hening. Bisa disewa privat (maks 12 orang).
+              </p>
+            </div>
+          </div>
+
+          <div class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src="images/ruang_karya.jpeg" alt="Ruang Karya" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Podcast</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Soundproof</span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-teal-700">
+                <i data-lucide="mic" class="w-5 h-5"></i>
+                <h3 class="font-serif text-xl font-bold text-slate-800">Ruang Karya</h3>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-1">
+                Ruang kedap suara untuk podcast atau konten kreator. Kapasitas 6 orang. Privasi terjaga.
+              </p>
+            </div>
+          </div>
+
+          <div class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src="images/kafe_makan_di_tebet.png" alt="Kafe Makan Di Tebet" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Restoran</span>
+                <span class="bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-teal-800">Coffee</span>
+              </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-teal-700">
+                <i data-lucide="coffee" class="w-5 h-5"></i>
+                <h3 class="font-serif text-xl font-bold text-slate-800">Kafe Makan Di Tebet</h3>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-1">
+                Lapar saat membaca? Nikmati burger, sop buntut, kopi, dan matcha latte di lantai 1.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-16 bg-slate-900 text-white rounded-2xl p-8 md:p-10 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-teal-600 rounded-full opacity-20 blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+          <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 class="font-serif text-2xl font-bold mb-4">Ketentuan Sewa Ruangan</h3>
+              <ul class="space-y-3 text-slate-300 text-sm">
+                <li class="flex gap-2">
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-teal-400 mt-0.5"></i>
+                  Satu sesi = maksimum 3 jam.
+                </li>
+                <li class="flex gap-2">
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-teal-400 mt-0.5"></i>
+                  Rp 500.000 / sesi (Ruang Pikir, Diskusi, Karya).
+                </li>
+                <li class="flex gap-2">
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-teal-400 mt-0.5"></i>
+                  Rp 700.000 / sesi (Ruang Roy B.B. Janis).
+                </li>
+                <li class="flex gap-2">
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-teal-400 mt-0.5"></i>
+                  Reservasi via WhatsApp.
+                </li>
+              </ul>
+            </div>
+            <div class="text-center md:text-right">
+              <a href="#" data-link="whatsapp" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-8 py-4 rounded-lg font-bold transition-all">
+                Booking Ruangan Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-tab-panel="pricing" class="animate-fade-in hidden">
+        <div class="text-center mb-12">
+          <h2 class="font-serif text-3xl font-bold text-slate-900 mb-4">Pilihan Keanggotaan</h2>
+          <p class="text-slate-600 max-w-2xl mx-auto">
+            Pilih paket yang sesuai dengan kebutuhan membaca Anda. Dari kunjungan harian hingga akses tahunan penuh.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-6">
+          <!-- Tahunan Umum -->
+          <div class="relative w-full md:w-[300px] rounded-2xl p-6 transition-all duration-300 flex flex-col bg-slate-900 text-white shadow-xl hover:shadow-2xl hover:-translate-y-1">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+              Paling Hemat
+            </div>
+
+            <div class="text-center mb-6 pt-2">
+              <h3 class="text-lg font-bold mb-1 text-white">Tahunan Umum</h3>
+              <p class="text-xs text-slate-400 mb-4">Untuk semua kalangan</p>
+              <div class="flex justify-center items-end gap-1">
+                <span class="text-sm font-medium opacity-60">Rp</span>
+                <span class="text-4xl font-bold text-teal-400">800</span>
+                <span class="text-lg font-bold text-teal-400">k</span>
+                <span class="text-sm opacity-60 mb-1">/thn</span>
+              </div>
+            </div>
+
+            <div class="h-px w-full mb-6 bg-slate-700"></div>
+
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-400 shrink-0"></i>
+                <span>Baca buku sepuasnya</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-400 shrink-0"></i>
+                <span>Berlaku 1 tahun</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-400 shrink-0"></i>
+                <span>Keanggotaan penuh</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-400 shrink-0"></i>
+                <span>Pinjam bawa pulang</span>
+              </li>
+            </ul>
+
+            <a href="#" data-link="loketYearGeneral" target="_blank" rel="noreferrer" class="w-full py-3 rounded-xl font-bold transition-colors bg-teal-600 hover:bg-teal-500 text-white text-center block">
+              Daftar Sekarang
+            </a>
+          </div>
+
+          <!-- Tiket Harian -->
+          <div class="relative w-full md:w-[300px] rounded-2xl p-6 transition-all duration-300 flex flex-col bg-white text-slate-800 border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1">
+            <div class="text-center mb-6 pt-2">
+              <h3 class="text-lg font-bold mb-1 text-slate-800">Tiket Harian</h3>
+              <p class="text-xs text-slate-500 mb-4">Sekali berkunjung</p>
+              <div class="flex justify-center items-end gap-1">
+                <span class="text-sm font-medium opacity-60">Rp</span>
+                <span class="text-4xl font-bold text-teal-700">35</span>
+                <span class="text-lg font-bold text-teal-700">k</span>
+                <span class="text-sm opacity-60 mb-1">/hr</span>
+              </div>
+            </div>
+
+            <div class="h-px w-full mb-6 bg-slate-100"></div>
+
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Baca buku sepuasnya</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Berlaku 1 hari</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm opacity-40">
+                <i data-lucide="x-circle" class="w-[18px] h-[18px] shrink-0"></i>
+                <span class="line-through">Keanggotaan</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm opacity-40">
+                <i data-lucide="x-circle" class="w-[18px] h-[18px] shrink-0"></i>
+                <span class="line-through">Pinjam bawa pulang</span>
+              </li>
+            </ul>
+
+            <a href="#" data-link="loketDaily" target="_blank" rel="noreferrer" class="w-full py-3 rounded-xl font-bold transition-colors bg-teal-50 hover:bg-teal-100 text-teal-800 text-center block">
+              Daftar Sekarang
+            </a>
+          </div>
+
+          <!-- Anggota Bulanan -->
+          <div class="relative w-full md:w-[300px] rounded-2xl p-6 transition-all duration-300 flex flex-col bg-white text-slate-800 border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1">
+            <div class="text-center mb-6 pt-2">
+              <h3 class="text-lg font-bold mb-1 text-slate-800">Anggota Bulanan</h3>
+              <p class="text-xs text-slate-500 mb-4">Umum dan pelajar</p>
+              <div class="flex justify-center items-end gap-1">
+                <span class="text-sm font-medium opacity-60">Rp</span>
+                <span class="text-4xl font-bold text-teal-700">100</span>
+                <span class="text-lg font-bold text-teal-700">k</span>
+                <span class="text-sm opacity-60 mb-1">/bln</span>
+              </div>
+            </div>
+
+            <div class="h-px w-full mb-6 bg-slate-100"></div>
+
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Baca buku sepuasnya</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Umum dan pelajar</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Berlaku 1 bulan</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm opacity-40">
+                <i data-lucide="x-circle" class="w-[18px] h-[18px] shrink-0"></i>
+                <span class="line-through">Pinjam bawa pulang</span>
+              </li>
+            </ul>
+
+            <a href="#" data-link="loketMonth" target="_blank" rel="noreferrer" class="w-full py-3 rounded-xl font-bold transition-colors bg-teal-50 hover:bg-teal-100 text-teal-800 text-center block">
+              Daftar Sekarang
+            </a>
+          </div>
+
+          <!-- Anggota 3 Bulanan -->
+          <div class="relative w-full md:w-[300px] rounded-2xl p-6 transition-all duration-300 flex flex-col bg-white text-slate-800 border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+              Favorit
+            </div>
+
+            <div class="text-center mb-6 pt-2">
+              <h3 class="text-lg font-bold mb-1 text-slate-800">Anggota 3 Bulanan</h3>
+              <p class="text-xs text-slate-500 mb-4">Umum dan pelajar</p>
+              <div class="flex justify-center items-end gap-1">
+                <span class="text-sm font-medium opacity-60">Rp</span>
+                <span class="text-4xl font-bold text-teal-700">250</span>
+                <span class="text-lg font-bold text-teal-700">k</span>
+                <span class="text-sm opacity-60 mb-1">/3bln</span>
+              </div>
+            </div>
+
+            <div class="h-px w-full mb-6 bg-slate-100"></div>
+
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Baca buku sepuasnya</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Umum dan pelajar</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Berlaku 3 bulan</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm opacity-40">
+                <i data-lucide="x-circle" class="w-[18px] h-[18px] shrink-0"></i>
+                <span class="line-through">Pinjam bawa pulang</span>
+              </li>
+            </ul>
+
+            <a href="#" data-link="loketQuarter" target="_blank" rel="noreferrer" class="w-full py-3 rounded-xl font-bold transition-colors bg-teal-50 hover:bg-teal-100 text-teal-800 text-center block">
+              Daftar Sekarang
+            </a>
+          </div>
+
+          <!-- Tahunan Pelajar -->
+          <div class="relative w-full md:w-[300px] rounded-2xl p-6 transition-all duration-300 flex flex-col bg-white text-slate-800 border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1">
+            <div class="text-center mb-6 pt-2">
+              <h3 class="text-lg font-bold mb-1 text-slate-800">Tahunan Pelajar</h3>
+              <p class="text-xs text-slate-500 mb-4">Pelajar dan mahasiswa</p>
+              <div class="flex justify-center items-end gap-1">
+                <span class="text-sm font-medium opacity-60">Rp</span>
+                <span class="text-4xl font-bold text-teal-700">600</span>
+                <span class="text-lg font-bold text-teal-700">k</span>
+                <span class="text-sm opacity-60 mb-1">/thn</span>
+              </div>
+            </div>
+
+            <div class="h-px w-full mb-6 bg-slate-100"></div>
+
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Baca buku sepuasnya</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Khusus pelajar</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Berlaku 1 tahun</span>
+              </li>
+              <li class="flex items-start gap-3 text-sm">
+                <i data-lucide="check" class="w-[18px] h-[18px] text-teal-600 shrink-0"></i>
+                <span>Pinjam bawa pulang</span>
+              </li>
+            </ul>
+
+            <a href="#" data-link="loketYearStudent" target="_blank" rel="noreferrer" class="w-full py-3 rounded-xl font-bold transition-colors bg-teal-50 hover:bg-teal-100 text-teal-800 text-center block">
+              Daftar Sekarang
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-16">
+          <div class="text-center mb-8">
+            <h3 class="font-serif text-2xl font-bold text-slate-900">Pertanyaan Umum</h3>
+            <p class="text-slate-600">Jawaban singkat untuk pertanyaan yang sering muncul.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Siapa saja yang bisa bergabung di BDT?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Minimal usia 12 tahun</strong> untuk menjadi anggota BDT.</li>
+                  <li><strong>Pelajar:</strong> siswa SMP dan SMA yang masih aktif bersekolah.</li>
+                  <li><strong>Mahasiswa:</strong> mahasiswa aktif hingga tingkat S1.</li>
+                  <li><strong>Umum:</strong> siapa saja selain pelajar dan mahasiswa S1.</li>
+                  <li>Pembayaran dilakukan sesuai paket langganan yang dipilih.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Apa saja fasilitas ruang yang tersedia?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Ruang RBBJ (Roy B. B. Janis) / Ruang Temu:</strong> ruang santai yang memperbolehkan makanan dan minuman. Harap kembalikan buku ke troli setelah selesai membaca.</li>
+                  <li><strong>Ruang Pikir dan Ruang Baca:</strong> silent room khusus untuk fokus belajar. Makanan, minuman, dan komunikasi (telepon atau zoom) tidak diperbolehkan.</li>
+                  <li><strong>Ruang Karya:</strong> ruang eksklusif yang dapat diakses dengan perjanjian terlebih dahulu.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Bagaimana cara mendaftar dan masuk ke BDT?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <p class="font-semibold mb-2">Mudah banget. Cukup 3 langkah:</p>
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Pilih paket:</strong> tentukan paket yang sesuai kebutuhan Anda.</li>
+                  <li><strong>Isi formulir:</strong> lengkapi data pendaftaran dengan benar.</li>
+                  <li><strong>Bayar:</strong> lakukan pembayaran sesuai paket yang dipilih.</li>
+                </ul>
+                <p class="mt-4 rounded-lg bg-slate-50 px-4 py-3 text-slate-700">Catatan: tiket harian hanya berlaku untuk hari yang sama dengan pemesanan.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Metode pembayaran apa saja yang tersedia?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <p class="font-semibold mb-2">Kami menyediakan berbagai metode pembayaran yang mudah:</p>
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Transfer bank:</strong> melalui virtual account.</li>
+                  <li><strong>E-wallet:</strong> GoPay, OVO, Dana, dan lainnya.</li>
+                  <li><strong>Minimarket:</strong> Alfamart, Indomaret.</li>
+                  <li><strong>Cash:</strong> langsung di lokasi (untuk tiket harian).</li>
+                </ul>
+                <p class="mt-4 font-semibold text-teal-700">Semua proses pembayaran aman dan terpercaya.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Bagaimana cara menuju BDT dengan transportasi umum?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <p class="font-semibold mb-2">Lokasi BDT sangat mudah dijangkau. Berikut rute terbaiknya:</p>
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>KRL Commuter Line:</strong> turun di Stasiun Cawang, lanjut dengan ojek online atau jalan kaki 15 menit.</li>
+                  <li><strong>TransJakarta:</strong> turun di Halte Pancoran Tugu, lanjut dengan ojek online atau jalan kaki 20 menit.</li>
+                  <li><strong>Kendaraan pribadi:</strong> alamat Jl. Tebet Barat Dalam Raya No. 29, Tebet, Jakarta Selatan.</li>
+                </ul>
+                <p class="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-emerald-700">Tips: gunakan Google Maps dengan kata kunci "Baca Di Tebet" untuk navigasi yang akurat.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Bagaimana proses menjadi anggota BDT?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <p class="font-semibold mb-2">Bergabung sebagai anggota memberikan banyak keuntungan.</p>
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Pilih durasi:</strong> paket bulanan, 3 bulanan, atau tahunan.</li>
+                  <li><strong>Lengkapi data:</strong> isi formulir pendaftaran dengan lengkap.</li>
+                  <li><strong>Nikmati benefit:</strong> akses unlimited dan pinjam buku pulang.</li>
+                  <li><strong>Fleksibilitas waktu:</strong> datang kapan saja sesuai keinginan.</li>
+                </ul>
+                <p class="mt-4 rounded-lg bg-teal-600 px-4 py-3 text-white text-center font-semibold">Anggota bisa datang kapan saja (kecuali hari libur) selama masa berlaku.</p>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Bisakah membawa rombongan atau grup ke BDT?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <p class="font-semibold mb-2">Tentu saja. Kami menyambut kunjungan rombongan dengan paket khusus.</p>
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Rombongan sekolah:</strong> ideal untuk field trip edukatif.</li>
+                  <li><strong>Grup kantor:</strong> cocok untuk team building dan workshop.</li>
+                  <li><strong>Keluarga besar:</strong> gathering sambil membaca bersama.</li>
+                </ul>
+                <div class="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-amber-900">
+                  <p class="font-semibold">Hubungi admin sekarang:</p>
+                  <a href="#" data-link="whatsappGroup" class="text-teal-700 font-bold">Chat WhatsApp untuk konsultasi dan penawaran khusus rombongan.</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden" data-accordion-item>
+              <button type="button" data-accordion-header aria-expanded="false" class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+                <h4 class="font-semibold text-slate-900 flex-1">Bisakah mengadakan acara atau event di BDT?</h4>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-teal-700 shrink-0">
+                  <i data-accordion-icon data-lucide="plus" class="w-4 h-4 transition-transform duration-200"></i>
+                </span>
+              </button>
+              <div data-accordion-content class="px-6 pb-6 text-slate-600 text-sm leading-relaxed max-h-0 overflow-hidden transition-all duration-300 text-justify">
+                <p class="font-semibold mb-2">BDT cocok untuk berbagai jenis acara.</p>
+                <ul class="space-y-2 list-disc pl-5">
+                  <li><strong>Book launch dan bedah buku:</strong> suasana mendukung diskusi.</li>
+                  <li><strong>Workshop dan seminar:</strong> pelatihan menulis, literasi, dan pengembangan diri.</li>
+                  <li><strong>Book club meeting:</strong> pertemuan rutin komunitas pecinta buku.</li>
+                  <li><strong>Pameran dan exhibition:</strong> showcase karya seni, foto, atau hasil karya kreatif.</li>
+                  <li><strong>Study group:</strong> sesi belajar bersama dan diskusi akademik.</li>
+                  <li><strong>Community gathering:</strong> acara komunitas dan networking.</li>
+                </ul>
+                <div class="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-emerald-700">
+                  <p class="font-semibold">Fasilitas yang tersedia:</p>
+                  <p>Ruang serbaguna, proyektor, sound system, WiFi cepat, dan suasana yang inspiratif.</p>
+                </div>
+                <div class="mt-4 rounded-lg bg-orange-50 px-4 py-3 text-orange-800">
+                  <p class="font-semibold">Tertarik mengadakan acara?</p>
+                  <a href="#" data-link="whatsappEvent" class="font-bold">Hubungi kami untuk diskusi konsep acara dan penawaran khusus.</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-tab-panel="agenda" class="animate-fade-in hidden">
+        <div class="text-center mb-12">
+          <h2 class="font-serif text-3xl font-bold text-slate-900 mb-4">Agenda & Kegiatan</h2>
+          <p class="text-slate-600 max-w-2xl mx-auto">
+            Bergabunglah dalam diskusi, bedah buku, dan berbagai kegiatan inspiratif di Baca Di Tebet.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-8 max-w-5xl mx-auto">
+          <!-- Event 1 -->
+          <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden transition-all duration-300 md:flex md:flex-row opacity-70 grayscale relative">
+            <div class="absolute top-6 right-6 z-20 rounded-full bg-slate-900/80 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">Event selesai</div>
+            <!-- Image Side (Left on Desktop) -->
+            <div class="relative w-full md:w-2/5 shrink-0 order-1 overflow-hidden">
+              <!-- Mobile: Natural Height | Desktop: Absolute Fill -->
+              <img src="images/liberating-the-body-poltics.jpg" alt="Poster Liberating The Body Politic" class="w-full h-auto object-cover md:absolute md:inset-0 md:h-full transition-transform duration-700 group-hover:scale-105">
+              <!-- Gradient Overlay: Short fade on edges only -->
+              <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent md:bg-gradient-to-l md:h-full md:w-24 md:top-0 md:bottom-0 md:right-0 md:left-auto pointer-events-none"></div>
+            </div>
+
+            <!-- Content Side (Right on Desktop) -->
+            <div class="p-8 flex-1 flex flex-col justify-center relative z-10 order-2">
+              <div class="mb-4">
+                <span class="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-bold tracking-wider mb-2">BINCANG PUBLIK</span>
+                <h3 class="font-serif text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-1">LIBERATING THE BODY POLITIC</h3>
+                <p class="text-teal-700 font-medium opacity-90">Decolonizing Minds, Movements, and Motherlands</p>
+              </div>
+              
+              <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3 text-slate-600">
+                  <i data-lucide="calendar" class="w-5 h-5 text-teal-600"></i>
+                  <span class="font-semibold">Kamis, 15 Januari 2026 • 15.30 - 18.00 WIB</span>
+                </div>
+                <div class="flex items-start gap-3 text-slate-600">
+                  <i data-lucide="map-pin" class="w-5 h-5 text-teal-600 shrink-0 mt-0.5"></i>
+                  <span>Baca Di Tebet (Jl. Tebet Barat Dalam Raya No. 29)</span>
+                </div>
+              </div>
+
+              <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                Diskusi publik internasional ini mempertemukan beragam perspektif lintas wilayah dan pengalaman untuk merefleksikan dekolonisasi. Menghadirkan Kanti W. Janis, Zayaan Shaafiu, Fanda Puspitasari, dan Christophe Dorigne-Thomson.
+              </p>
+
+              <a href="https://bit.ly/BDT1501" target="_blank" aria-disabled="true" tabindex="-1" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-lg font-bold w-full md:w-auto shadow-md opacity-60 cursor-not-allowed pointer-events-none">
+                Pendaftaran Ditutup <i data-lucide="lock" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Event 2 -->
+          <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden transition-all duration-300 md:flex md:flex-row opacity-70 grayscale relative">
+            <div class="absolute top-6 right-6 z-20 rounded-full bg-slate-900/80 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">Event selesai</div>
+            <!-- Image Side (Left on Desktop) -->
+            <div class="relative w-full md:w-2/5 shrink-0 order-1 overflow-hidden">
+              <!-- Mobile: Natural Height | Desktop: Absolute Fill -->
+              <img src="images/inspirasi-kartini-dan%20kesetaraan-gender.jpg" alt="Poster Inspirasi Kartini" class="w-full h-auto object-cover md:absolute md:inset-0 md:h-full transition-transform duration-700 group-hover:scale-105">
+              <!-- Gradient Overlay: Short fade on edges only -->
+              <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent md:bg-gradient-to-l md:h-full md:w-24 md:top-0 md:bottom-0 md:right-0 md:left-auto pointer-events-none"></div>
+            </div>
+
+            <!-- Content Side (Right on Desktop) -->
+            <div class="p-8 flex-1 flex flex-col justify-center relative z-10 order-2">
+              <div class="mb-4">
+                <span class="inline-block px-3 py-1 bg-slate-100 text-slate-800 rounded-full text-xs font-bold tracking-wider mb-2">BEDAH BUKU</span>
+                <h3 class="font-serif text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-1">INSPIRASI KARTINI &amp; KESETARAAN</h3>
+                <p class="text-slate-500 font-medium opacity-90">Karya Prof. Dr. Wardiman Djojonegoro</p>
+              </div>
+              
+              <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3 text-slate-600">
+                  <i data-lucide="calendar" class="w-5 h-5 text-slate-600"></i>
+                  <span class="font-semibold">Jumat, 16 Januari 2026 • 14.00 - 17.00 WIB</span>
+                </div>
+                <div class="flex items-start gap-3 text-slate-600">
+                  <i data-lucide="map-pin" class="w-5 h-5 text-slate-600 shrink-0 mt-0.5"></i>
+                  <span>Baca Di Tebet (Perpustakaan & Ruang Temu)</span>
+                </div>
+              </div>
+
+              <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                Menyelami Kartini sebagai pemikir yang relevan hingga hari ini. Bersama Kanti W. Janis, Stebby Julionatan, serta pembacaan surat oleh Mia Ismi dan Rizqika Arrum B.
+              </p>
+
+              <a href="https://bit.ly/Kartini160126" target="_blank" aria-disabled="true" tabindex="-1" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-800 text-white rounded-lg font-bold w-full md:w-auto shadow-md opacity-60 cursor-not-allowed pointer-events-none">
+                Pendaftaran Ditutup <i data-lucide="lock" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-tab-panel="blog" class="animate-fade-in hidden">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-10">
+          <div>
+            <h2 class="font-serif text-3xl font-bold text-slate-900 mb-2">Tulisan Terbaru</h2>
+            <p class="text-slate-600">Pemikiran, resensi, dan kabar dari komunitas BDT.</p>
+          </div>
+          <a href="#" data-link="blog" class="hidden md:flex items-center gap-1 text-teal-700 font-medium hover:underline">
+            Lihat Blog Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <div class="blog-entries grid md:grid-cols-3 gap-8">
+          <div class="md:col-span-3 rounded-xl border border-slate-100 bg-white p-6 text-center text-slate-500">
+            Memuat artikel terbaru...
+          </div>
+        </div>
+      </section>
+
+      <section data-tab-panel="contact" class="animate-fade-in hidden">
+        <div class="grid md:grid-cols-2 gap-12">
+          <div class="bg-slate-900 text-white p-8 md:p-12 rounded-2xl shadow-xl">
+            <h2 class="font-serif text-3xl font-bold mb-8">Informasi Kontak</h2>
+
+            <div class="space-y-8">
+              <div class="flex items-start gap-4">
+                <div class="bg-white/10 p-3 rounded-lg">
+                  <i data-lucide="map-pin" class="w-6 h-6 text-teal-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg mb-1">Alamat</h4>
+                  <p class="text-slate-300 leading-relaxed">
+                    Jl. Tebet Barat Dalam Raya No. 29,<br />
+                    Tebet, Jakarta Selatan,<br />
+                    DKI Jakarta
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="bg-white/10 p-3 rounded-lg">
+                  <i data-lucide="mail" class="w-6 h-6 text-teal-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg mb-1">Email</h4>
+                  <a href="#" data-link="email" class="text-slate-300 hover:text-white transition-colors">bacaditebet@gmail.com</a>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="bg-white/10 p-3 rounded-lg">
+                  <i data-lucide="instagram" class="w-6 h-6 text-teal-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-lg mb-1">Social Media</h4>
+                  <a href="#" data-link="instagram" target="_blank" rel="noreferrer" class="text-slate-300 hover:text-white transition-colors block">@bacaditebet</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-white/10">
+              <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                <i data-lucide="clock" class="w-5 h-5 text-teal-400"></i>
+                Jam Operasional
+              </h4>
+              <div class="grid grid-cols-2 gap-4 text-sm text-slate-300">
+                <div>
+                  <p class="text-white font-medium">Senin</p>
+                  <p>Tutup</p>
+                </div>
+                <div>
+                  <p class="text-white font-medium">Sel - Kamis</p>
+                  <p>10:00 - 18:00 WIB</p>
+                </div>
+                <div>
+                  <p class="text-white font-medium">Jumat</p>
+                  <p>12:30 - 21:00 WIB</p>
+                </div>
+                <div>
+                  <p class="text-white font-medium">Sabtu</p>
+                  <p>10:00 - 22:00 WIB</p>
+                </div>
+                <div>
+                  <p class="text-white font-medium">Minggu</p>
+                  <p>10:00 - 18:00 WIB</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-full min-h-[400px] bg-slate-200 rounded-2xl overflow-hidden relative">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.2087279435477!2d106.8470392!3d-6.236195299999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3d2517ea14b%3A0xe276c06b5f3b3c3b!2sBaca%20Di%20Tebet%20Perpustakaan%20dan%20Ruang%20Temu!5e0!3m2!1sen!2sid!4v1768214840645!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="absolute inset-0"></iframe>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+        <div class="flex items-center gap-2">
+          <img src="images/bdt-logo.png" alt="Baca Di Tebet Logo" class="h-14" />
+        </div>
+        <div class="flex gap-6 text-sm text-slate-500 font-medium">
+          <a href="privacy/" class="hover:text-teal-700">Privasi</a>
+          <a href="terms/" class="hover:text-teal-700">Syarat dan Ketentuan</a>
+          <a href="faq/" class="hover:text-teal-700">FAQ</a>
+        </div>
+      </div>
+      <div class="text-center text-slate-400 text-sm">
+        &copy; <span id="copyright-year"></span> Baca Di Tebet. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" data-link="whatsapp" target="_blank" rel="noreferrer" class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-xl hover:scale-110 transition-transform z-50 flex items-center justify-center" title="Chat WhatsApp">
+    <i data-lucide="message-circle" class="w-7 h-7"></i>
+  </a>
+
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="script/main.js" defer></script>
+  <script src="script/blog-feed.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>Halaman Tidak Ditemukan - Baca Di Tebet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="/images/bdt-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    .stagger-1 { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.1s; }
+    .stagger-2 { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.2s; }
+    .stagger-3 { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.3s; }
+  </style>
+</head>
+<body class="bg-[#FDFBF7] text-slate-800 font-sans min-h-screen flex flex-col selection:bg-teal-100 selection:text-teal-900">
+  
+  <nav class="w-full py-6 px-6 relative z-50">
+    <div class="max-w-7xl mx-auto flex justify-center md:justify-start">
+      <a href="/">
+        <img src="/images/bdt-logo.png" alt="Baca Di Tebet" class="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
+      </a>
+    </div>
+  </nav>
+
+  <main class="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
+    <!-- Decorative elements consistent with main design -->
+    <div class="absolute top-0 right-0 w-1/2 h-full bg-teal-50 opacity-40 skew-x-12 translate-x-1/3 -z-10"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-100/40 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2 -z-10"></div>
+
+    <div id="message-container" class="max-w-2xl w-full text-center relative z-10">
+      <h1 class="animate-float font-serif text-[10rem] md:text-[12rem] font-bold text-teal-50/80 leading-none select-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10">404</h1>
+      
+      <h2 id="page-title" class="stagger-1 font-serif text-4xl md:text-6xl font-bold text-slate-800 mb-4">
+        Tersesat di Antara Rak?
+      </h2>
+      
+      <p id="page-description" class="stagger-2 text-lg text-slate-600 mb-8 leading-relaxed max-w-md mx-auto">
+        Halaman ini belum dicetak.
+      </p>
+
+      <div class="stagger-3 flex flex-col sm:flex-row gap-4 justify-center">
+        <a id="action-btn" href="/" class="px-8 py-3 bg-teal-700 text-white rounded-full font-medium hover:bg-teal-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 inline-flex items-center justify-center gap-2 group">
+          <span>Kembali</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-8 text-center text-slate-400 text-sm relative z-10">
+    <p>&copy; <span id="year"></span> Baca Di Tebet. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Update Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Check for Logic
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simple check for /daftar in URL
+      if (window.location.pathname.indexOf('/daftar') !== -1) {
+          const title = document.getElementById('page-title');
+          const description = document.getElementById('page-description');
+          const btn = document.getElementById('action-btn');
+
+           if (title && description && btn) {
+             title.innerText = "Pendaftaran Pindah";
+             description.innerHTML = "Halaman daftar kini ada di beranda.";
+            
+             btn.href = "/?tab=pricing";
+             btn.innerHTML = '<span>Bawa aku ke sana...</span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+             // Pulse animation to draw attention
+             btn.classList.add('animate-pulse');
+             setTimeout(() => btn.classList.remove('animate-pulse'), 2000);
+           }
+      }
+    });
+  </script>
+</body>
+</html>
