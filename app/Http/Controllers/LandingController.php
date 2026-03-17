@@ -6,6 +6,7 @@ use App\Models\AgendaEvent;
 use App\Models\MemberType;
 use App\Models\LandingContent;
 use App\Models\Faq;
+use App\Models\Campaign;
 use Illuminate\Support\Str;
 
 class LandingController extends Controller
@@ -23,8 +24,29 @@ class LandingController extends Controller
             ->orderBy('order')
             ->get()
             ->map(function (MemberType $type) {
-                $type->display_price = $this->formatPriceShort($type->pricing);
-                $type->display_period = $this->formatDuration($type->duration_days);
+                $autoPromo = Campaign::getActiveAutoPromo('membership', $type->id, false);
+                $discount = $autoPromo ? $autoPromo->calculateDiscount($type->pricing) : 0;
+                $finalPrice = $type->pricing - $discount;
+
+                $durationBonus = ($autoPromo && $autoPromo->discount_type === 'duration') ? $autoPromo->discount_value : 0;
+
+                $type->original_price = $type->pricing;
+                $type->discount_amount = $discount;
+                $type->final_price = $finalPrice;
+                $type->display_price = $this->formatPriceShort($finalPrice);
+                
+                if ($durationBonus > 0) {
+                    $type->promo_badge_text = "+{$durationBonus} Hari";
+                    $type->display_original = null;
+                } else if ($discount > 0) {
+                    $type->promo_badge_text = "Promo";
+                    $type->display_original = $this->formatPriceShort($type->original_price);
+                } else {
+                    $type->promo_badge_text = null;
+                    $type->display_original = null;
+                }
+
+                $type->display_period = $this->formatDuration($type->duration_days + $durationBonus);
                 $type->is_featured = $this->isFeaturedLabel($type->label);
                 $type->is_favorite = $this->isFavoriteLabel($type->label);
                 $type->cta_link = url('/?tab=pricing&membership=' . $type->id) . '#membership-form';
@@ -38,10 +60,17 @@ class LandingController extends Controller
         });
         $showVisitTicket = ! $hasVisitTicket;
 
+        $visitOriginalPrice = 35000;
+        $visitPromo = Campaign::getActiveAutoPromo('membership', 0, false);
+        $visitDiscount = $visitPromo ? $visitPromo->calculateDiscount($visitOriginalPrice) : 0;
+        $visitFinalPrice = $visitOriginalPrice - $visitDiscount;
+
         $visitTicket = [
             'name' => 'Tiket Harian',
             'subtitle' => 'Sekali berkunjung',
-            'price' => $this->formatPriceShort(35000),
+            'price' => $this->formatPriceShort($visitFinalPrice),
+            'original_price' => $visitDiscount > 0 ? $this->formatPriceShort($visitOriginalPrice) : null,
+            'promo_badge_text' => $visitDiscount > 0 ? 'Promo' : null,
             'period' => 'hr',
             'cta_link' => url('/daftar?type=visit'),
             'cta_text' => 'Daftar Sekarang',

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AgendaEventController;
 use App\Http\Controllers\Admin\LandingContentController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MembershipTypeController;
+use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\VisitController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TransactionMembershipController;
@@ -70,6 +71,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('pages/{slug}', [ContentPageController::class, 'update'])->name('pages.update');
             Route::resource('faqs', FaqController::class)->except(['show']);
         });
+
+        Route::resource('campaigns', CampaignController::class);
 
         Route::prefix('membership')->name('membership.')->group(function () {
             Route::get('/', function () {

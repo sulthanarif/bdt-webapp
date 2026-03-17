@@ -28,6 +28,7 @@
           $isDashboard = request()->routeIs('admin.dashboard');
           $isContent = request()->routeIs('admin.content.*');
           $isMembership = request()->routeIs('admin.membership.*');
+          $isCampaigns = request()->routeIs('admin.campaigns.*');
           $isEvents = request()->routeIs('admin.events.*');
           $isTransactions = request()->routeIs('admin.transactions.*');
         @endphp
@@ -76,6 +77,16 @@
             </a>
           </div>
         </div>
+        <a href="{{ route('admin.campaigns.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 font-semibold {{ $isCampaigns ? 'bg-teal-50 text-teal-700' : 'text-slate-600 hover:bg-slate-50' }}">
+          <span class="h-9 w-9 rounded-lg {{ $isCampaigns ? 'bg-teal-600/10' : 'bg-slate-100' }} flex items-center justify-center">
+            <svg class="h-4 w-4 {{ $isCampaigns ? 'text-teal-700' : 'text-slate-500' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </span>
+          Campaign & Voucher
+        </a>
         <a href="{{ route('admin.events.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 font-semibold {{ $isEvents ? 'bg-teal-50 text-teal-700' : 'text-slate-600 hover:bg-slate-50' }}">
           <span class="h-9 w-9 rounded-lg {{ $isEvents ? 'bg-teal-600/10' : 'bg-slate-100' }} flex items-center justify-center">
             <svg class="h-4 w-4 {{ $isEvents ? 'text-teal-700' : 'text-slate-500' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -223,5 +234,6 @@
       });
     });
   </script>
+  <script src="https://unpkg.com/lucide@latest" onload="lucide.createIcons()"></script>
 </body>
 </html>

@@ -112,6 +112,20 @@
             @enderror
           </div>
 
+          <div data-member-step="1">
+            <label class="text-sm font-semibold text-slate-700">Kode Voucher <span class="text-slate-400 font-normal">(Opsional)</span></label>
+            <div class="relative">
+              <input type="text" name="promo_code" value="{{ old('promo_code') }}" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm uppercase font-mono focus:border-teal-500 focus:ring-2 focus:ring-teal-200" placeholder="Ketik kode jika ada" data-voucher-input autocomplete="off">
+              <span data-voucher-checking class="hidden absolute right-3 top-5 text-xs text-slate-400 animate-pulse">Memeriksa...</span>
+            </div>
+            <div data-voucher-feedback class="hidden mt-2 rounded-xl px-4 py-2.5 text-xs font-medium">
+              <span data-voucher-feedback-text></span>
+            </div>
+            @error('promo_code')
+              <p class="mt-2 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+          </div>
+
           {{-- Daily Ticket: Qty field in step 1 --}}
           <div data-member-step="1" data-daily-fields class="hidden">
             <label class="text-sm font-semibold text-slate-700">Jumlah Orang</label>
@@ -123,7 +137,17 @@
 
           <div data-member-step="2" data-member-fields class="md:col-span-2 hidden">
             <label class="text-sm font-semibold text-slate-700">NIK</label>
-            <input type="text" name="nik" value="{{ old('nik') }}" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+            <div class="relative">
+              <input type="text" name="nik" value="{{ old('nik') }}" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200" data-nik-input>
+              <span data-nik-checking class="hidden absolute right-3 top-5 text-xs text-slate-400 animate-pulse">Memeriksa...</span>
+            </div>
+            <div data-renewal-banner class="hidden mt-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm">
+              <div class="flex items-center gap-2 font-semibold text-teal-700">
+                <i data-lucide="tag" class="w-4 h-4 shrink-0"></i>
+                <span data-renewal-banner-title></span>
+              </div>
+              <p class="mt-1 text-xs text-teal-600" data-renewal-banner-desc></p>
+            </div>
             @error('nik')
               <p class="mt-2 text-xs text-rose-600">{{ $message }}</p>
             @enderror
@@ -313,6 +337,10 @@
                   <div class="flex items-center justify-between">
                     <span>Jumlah</span>
                     <span class="font-semibold" data-payment-qty>-</span>
+                  </div>
+                  <div data-discount-row class="hidden items-center justify-between text-teal-600">
+                    <span>Diskon</span>
+                    <span class="font-semibold" data-payment-discount>-</span>
                   </div>
                   <div class="flex items-center justify-between">
                     <span>Metode</span>

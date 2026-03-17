@@ -95,6 +95,32 @@
             </table>
           </div>
         </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <h3 class="text-sm font-semibold text-slate-700">Item Event</h3>
+          <div class="mt-4 overflow-hidden rounded-xl border border-slate-200">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                  <th class="px-3 py-2">Event</th>
+                  <th class="px-3 py-2 text-right">Harga</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                @forelse ($transaction->eventRegistrations as $item)
+                  <tr>
+                    <td class="px-3 py-2">{{ $item->event?->title ?? '-' }}</td>
+                    <td class="px-3 py-2 text-right">Rp {{ number_format($item->event?->price ?? 0, 0, ',', '.') }}</td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="2" class="px-3 py-3 text-center text-slate-500">Tidak ada item event.</td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div class="space-y-4">
@@ -121,6 +147,12 @@
               <span>Paid At</span>
               <span class="font-semibold">{{ $transaction->paid_at?->format('d M Y H:i') ?? '-' }}</span>
             </div>
+            @if(isset($transaction->gateway_payload['invoice_url']))
+            <div class="flex flex-col gap-1 mt-2 pt-2 border-t border-slate-100">
+              <span>Link Pembayaran (Xendit)</span>
+              <a href="{{ $transaction->gateway_payload['invoice_url'] }}" target="_blank" class="font-semibold text-blue-600 hover:underline break-all">{{ $transaction->gateway_payload['invoice_url'] }}</a>
+            </div>
+            @endif
           </div>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-6">

@@ -58,7 +58,7 @@
           <select name="member_type_id" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
             <option value="">Pilih paket</option>
             @foreach ($memberTypes as $type)
-              <option value="{{ $type->id }}" data-is-student="{{ $type->is_student ? '1' : '0' }}" {{ (int) old('member_type_id') === $type->id ? 'selected' : '' }}>
+              <option value="{{ $type->id }}" data-duration="{{ $type->duration_days }}" data-is-student="{{ $type->is_student ? '1' : '0' }}" {{ (int) old('member_type_id') === $type->id ? 'selected' : '' }}>
                 {{ $type->name }} - Rp {{ number_format($type->pricing, 0, ',', '.') }}
               </option>
             @endforeach
@@ -185,37 +185,62 @@
         </div>
 
         <div class="mt-6 grid gap-6 md:grid-cols-2">
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Status Transaksi</label>
-            <select name="status" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-              <option value="pending" {{ old('status', 'pending') === 'pending' ? 'selected' : '' }}>Pending</option>
-              <option value="paid" {{ old('status') === 'paid' ? 'selected' : '' }}>Paid</option>
+          <!-- Status transaksi disembunyikan dan otomatis 'paid' di backend -->
+
+          <div class="space-y-2 md:col-span-2">
+            <label class="text-sm font-semibold text-slate-700">Gunakan Promo / Campaign (Opsional)</label>
+            <select name="campaign_id" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+              <option value="">-- Tanpa Promo --</option>
+              @foreach($campaigns as $camp)
+                <option value="{{ $camp->id }}" 
+                        data-target-type="{{ $camp->target_type }}" 
+                        data-target-items="{{ json_encode($camp->target_items) }}"
+                        {{ (int) old('campaign_id') === $camp->id ? 'selected' : '' }}>
+                  {{ $camp->name }} {{ $camp->code ? '('.$camp->code.')' : '' }}
+                </option>
+              @endforeach
             </select>
-            @error('status')
+            @error('campaign_id')
               <p class="text-xs text-rose-600">{{ $message }}</p>
             @enderror
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-semibold text-slate-700">Metode Pembayaran</label>
-            <input type="text" name="payment_method" value="{{ old('payment_method') }}" placeholder="Cash / Transfer / E-wallet" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+            <select name="payment_method" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200" required>
+              <option value="">Pilih Metode Pembayaran</option>
+              <option value="Cash" {{ old('payment_method') === 'Cash' ? 'selected' : '' }}>Cash</option>
+              <option value="QRIS" {{ old('payment_method') === 'QRIS' ? 'selected' : '' }}>QRIS</option>
+              <option value="Transfer Bank" {{ old('payment_method') === 'Transfer Bank' ? 'selected' : '' }}>Transfer Bank</option>
+              <option value="Debit/Credit Card" {{ old('payment_method') === 'Debit/Credit Card' ? 'selected' : '' }}>Debit / Credit Card</option>
+              <option value="E-Wallet" {{ old('payment_method') === 'E-Wallet' ? 'selected' : '' }}>E-Wallet (GoPay/OVO/Dana)</option>
+              <option value="Hadiah / Gratis" {{ old('payment_method') === 'Hadiah / Gratis' ? 'selected' : '' }}>Hadiah / Gratis</option>
+            </select>
             @error('payment_method')
               <p class="text-xs text-rose-600">{{ $message }}</p>
             @enderror
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Referensi Pembayaran</label>
-            <input type="text" name="payment_reference" value="{{ old('payment_reference') }}" placeholder="No. resi / catatan kasir" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-            @error('payment_reference')
+            <label class="text-sm font-semibold text-slate-700">Tanggal Bayar</label>
+            <input type="date" name="paid_at" value="{{ old('paid_at', now()->format('Y-m-d')) }}" required class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+            @error('paid_at')
               <p class="text-xs text-rose-600">{{ $message }}</p>
             @enderror
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Tanggal Bayar</label>
-            <input type="date" name="paid_at" value="{{ old('paid_at') }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-            @error('paid_at')
+            <label class="text-sm font-semibold text-slate-700">Nama Pengirim / Pemilik Rekening</label>
+            <input type="text" name="payment_sender_name" value="{{ old('payment_sender_name') }}" placeholder="Contoh: Budi Santoso" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+            @error('payment_sender_name')
+              <p class="text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-slate-700">No. Rekening / Resi Pembayaran</label>
+            <input type="text" name="payment_reference" value="{{ old('payment_reference') }}" placeholder="Contoh: BCA 1234567890 / 08123xxx" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+            @error('payment_reference')
               <p class="text-xs text-rose-600">{{ $message }}</p>
             @enderror
           </div>
@@ -240,6 +265,24 @@
       const memberType = document.querySelector('select[name="member_type_id"]');
       const studentFields = Array.from(document.querySelectorAll('[data-student-field]'));
       const studentVerify = document.querySelector('[data-student-verify]');
+      const expiredInput = document.querySelector('input[name="expired_at"]');
+
+      const setExpiryFromType = () => {
+        if (!memberType || !expiredInput) return;
+        const option = memberType.selectedOptions[0];
+        if (!option || !option.dataset.duration) {
+            expiredInput.value = '';
+            return;
+        }
+        const duration = Number(option.dataset.duration || 0);
+        if (!duration) return;
+        const today = new Date();
+        today.setDate(today.getDate() + duration);
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        expiredInput.value = `${year}-${month}-${day}`;
+      };
 
       const setStudentVisibility = (isStudent) => {
         studentFields.forEach((field) => {
@@ -270,21 +313,68 @@
           const option = memberType.selectedOptions[0];
           setStudentVisibility(option?.dataset?.isStudent === '1');
         }
+        
+        // Memaksa reset dan filter ulang campaign dropdown tiap ganti tipe visit
+        updateCampaignOptions();
       };
 
       kindRadios.forEach((radio) => {
         radio.addEventListener('change', () => setKindVisibility(radio.value));
       });
 
+      const dailyType = document.querySelector('select[name="daily_type_id"]');
+      const campaignSelect = document.querySelector('select[name="campaign_id"]');
+      const campaignOptions = Array.from(document.querySelectorAll('select[name="campaign_id"] option:not([value=""])'));
+
+      const updateCampaignOptions = () => {
+        if (!campaignSelect) return;
+        
+        const kind = document.querySelector('input[name="visit_kind"]:checked')?.value;
+        const targetType = kind === 'daily' ? 'ticket' : 'membership';
+        const activeSelect = kind === 'daily' ? dailyType : memberType;
+        const itemId = activeSelect?.value;
+
+        campaignOptions.forEach(opt => {
+          let isValid = true;
+          const campTargetType = opt.dataset.targetType;
+          
+          if (campTargetType !== 'any' && campTargetType !== targetType) {
+            isValid = false;
+          }
+
+          if (isValid && campTargetType !== 'any' && opt.dataset.targetItems && opt.dataset.targetItems !== 'null') {
+            try {
+              const items = JSON.parse(opt.dataset.targetItems);
+              if (items && Object.keys(items).length > 0) {
+                if (!itemId || !(itemId in items)) {
+                  isValid = false;
+                }
+              }
+            } catch (e) {}
+          }
+
+          opt.style.display = isValid ? 'block' : 'none';
+          
+          if (!isValid && opt.selected) {
+            campaignSelect.value = '';
+          }
+        });
+      };
+
+      if (dailyType) dailyType.addEventListener('change', updateCampaignOptions);
+
       if (memberType) {
         memberType.addEventListener('change', () => {
           const option = memberType.selectedOptions[0];
           setStudentVisibility(option?.dataset?.isStudent === '1');
+          setExpiryFromType();
+          updateCampaignOptions();
         });
       }
 
       const initialKind = kindRadios.find((radio) => radio.checked)?.value || 'daily';
       setKindVisibility(initialKind);
+      updateCampaignOptions();
     });
   </script>
 @endsection

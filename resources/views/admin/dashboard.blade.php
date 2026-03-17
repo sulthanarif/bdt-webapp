@@ -84,10 +84,18 @@
             Export CSV
           </button>
         </div>
-        <div class="mt-6 grid grid-cols-12 items-end gap-3 h-40">
-          @for ($i = 0; $i < 12; $i++)
-            <div class="col-span-1 rounded-xl bg-teal-100/80" style="height: {{ 20 + ($i * 6) }}px"></div>
-          @endfor
+        <div class="mt-6 flex items-end gap-1 h-40">
+          @foreach ($chartData as $data)
+            @php
+              $heightRatio = $maxRevenue > 0 ? ($data['total'] / $maxRevenue) : 0;
+              $heightPx = max(4, round($heightRatio * 160));
+            @endphp
+            <div 
+              class="flex-1 rounded-t bg-teal-100 hover:bg-teal-500 transition-colors" 
+              style="height: {{ $heightPx }}px"
+              title="{{ \Carbon\Carbon::parse($data['date'])->format('d M Y') }}: Rp {{ number_format($data['total'], 0, ',', '.') }}">
+            </div>
+          @endforeach
         </div>
         <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
           <span>Awal bulan</span>
@@ -108,6 +116,9 @@
               @switch($item['tone'])
                 @case('warning')
                   <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Perlu Dicek</span>
+                  @break
+                @case('success')
+                  <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Aktif</span>
                   @break
                 @default
                   <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-600">Standby</span>

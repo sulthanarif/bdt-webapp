@@ -63,7 +63,13 @@
                 {{ $member->memberType->name ?? 'Belum dipilih' }}
               </td>
               <td class="px-4 py-3">
-                {{ $member->latestTransaction?->invoice_id ?? '-' }}
+                @if($member->latestTransaction)
+                  <a href="{{ route('admin.transactions.show', $member->latestTransaction) }}" class="text-teal-600 hover:underline font-medium">
+                    {{ $member->latestTransaction->invoice_id }}
+                  </a>
+                @else
+                  -
+                @endif
               </td>
               <td class="px-4 py-3">
                 @if ($member->status === 'banned')

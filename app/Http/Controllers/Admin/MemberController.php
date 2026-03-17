@@ -46,60 +46,9 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $data = $this->validateMember($request);
-        $createTransaction = $request->boolean('create_transaction');
 
-        if ($createTransaction) {
-            $request->validate([
-                'transaction_status' => ['required', 'string', 'in:pending,paid'],
-                'payment_method' => ['nullable', 'string', 'max:50'],
-                'payment_reference' => ['nullable', 'string', 'max:120'],
-                'paid_at' => ['nullable', 'date'],
-            ]);
-        }
-
-        DB::transaction(function () use ($data, $request, $createTransaction) {
+        DB::transaction(function () use ($data, $request) {
             $member = Member::create($data);
-
-            if ($createTransaction) {
-                $memberType = MemberType::find($data['member_type_id']);
-                $invoiceId = $this->generateInvoiceId();
-                $status = $request->input('transaction_status', 'pending');
-                $paidAt = $status === 'paid'
-                    ? ($request->filled('paid_at') ? $request->date('paid_at') : now())
-                    : null;
-
-                $transaction = Transaction::create([
-                    'member_id' => $member->id,
-                    'created_by' => $request->user()?->id,
-                    'customer_name' => $member->name,
-                    'customer_email' => $member->email,
-                    'customer_phone' => $member->phone,
-                    'invoice_id' => $invoiceId,
-                    'status' => $status,
-                    'amount_total' => $memberType?->pricing ?? 0,
-                    'currency' => 'IDR',
-                    'channel' => 'onsite',
-                    'payment_method' => $request->input('payment_method'),
-                    'payment_reference' => $request->input('payment_reference'),
-                    'paid_at' => $paidAt,
-                ]);
-
-                TransactionMembership::create([
-                    'transaction_id' => $transaction->id,
-                    'member_id' => $member->id,
-                    'member_type_id' => $memberType?->id,
-                    'qty' => 1,
-                    'unit_price' => $memberType?->pricing ?? 0,
-                    'subtotal' => $memberType?->pricing ?? 0,
-                ]);
-
-                if ($status === 'paid' && ! $member->expired_at && $memberType) {
-                    $member->update([
-                        'expired_at' => now()->addDays($memberType->duration_days),
-                        'status' => 'active',
-                    ]);
-                }
-            }
         });
 
         return redirect()
@@ -194,17 +143,5 @@ class MemberController extends Controller
         }
 
         return $data;
-    }
-
-    private function generateInvoiceId(): string
-    {
-        $prefix = 'INV-' . now()->format('Ymd') . '-';
-
-        do {
-            $suffix = Str::upper(Str::random(6));
-            $invoiceId = $prefix . $suffix;
-        } while (Transaction::where('invoice_id', $invoiceId)->exists());
-
-        return $invoiceId;
     }
 }

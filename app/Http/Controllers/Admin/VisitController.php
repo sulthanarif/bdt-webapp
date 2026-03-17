@@ -30,6 +30,7 @@ class VisitController extends Controller
         return view('admin.membership.visits.form', [
             'dailyTypes' => MemberType::where('is_daily', true)->orderBy('order')->get(),
             'memberTypes' => MemberType::where('is_daily', false)->orderBy('order')->get(),
+            'campaigns' => \App\Models\Campaign::where('is_active', true)->orderBy('name')->get(),
         ]);
     }
 
@@ -51,11 +52,12 @@ class VisitController extends Controller
             'nim' => ['nullable', 'string', 'max:50'],
             'university' => ['nullable', 'string', 'max:150'],
             'expired_at' => ['nullable', 'date'],
-            'status' => ['required', 'string', 'in:pending,paid'],
-            'payment_method' => ['nullable', 'string', 'max:50'],
+            'payment_method' => ['required', 'string', 'max:50'],
+            'payment_sender_name' => ['nullable', 'string', 'max:100'],
             'payment_reference' => ['nullable', 'string', 'max:120'],
-            'paid_at' => ['nullable', 'date'],
+            'paid_at' => ['required', 'date'],
             'is_verified_student' => ['nullable', 'boolean'],
+            'campaign_id' => ['nullable', 'integer', 'exists:campaigns,id'],
         ]);
 
         $validator->after(function ($validator) use ($request) {
@@ -99,16 +101,33 @@ class VisitController extends Controller
         $kind = $data['visit_kind'];
         $invoiceId = $this->generateInvoiceId();
 
-        $paidAt = $data['status'] === 'paid'
-            ? ($request->filled('paid_at') ? $request->date('paid_at') : now())
-            : null;
+        $paidAt = $request->filled('paid_at') ? $request->date('paid_at') : now();
+        $status = 'paid';
+        $finalReference = trim(($data['payment_sender_name'] ?? '') . ' - ' . ($data['payment_reference'] ?? ''), ' -');
+
+        $campaignToApply = null;
+        if (!empty($data['campaign_id'])) {
+            $campaignToApply = \App\Models\Campaign::find($data['campaign_id']);
+            $targetType = $kind === 'daily' ? 'ticket' : 'membership';
+            $itemIdToCheck = $kind === 'daily' ? $data['daily_type_id'] : $data['member_type_id'];
+            
+            // Assume onsite isn't specifically known for "renewal" offhand unless looking up NIK, default false
+            $isRenewal = false; 
+
+            if ($campaignToApply && !$campaignToApply->isValidFor($targetType, $itemIdToCheck, $isRenewal)) {
+                return redirect()->back()->withInput()->withErrors(['campaign_id' => 'Promo/Campaign yang dipilih tidak berlaku untuk paket ini.']);
+            }
+        }
 
         if ($kind === 'daily') {
             $memberType = MemberType::find($data['daily_type_id']);
             $qty = (int) ($data['qty'] ?? 1);
-            $amountTotal = ($memberType?->pricing ?? 0) * $qty;
+            $originalPrice = ($memberType?->pricing ?? 0) * $qty;
+            
+            $discountAmount = $campaignToApply ? $campaignToApply->calculateDiscount($originalPrice, $memberType?->id ?? 0) : 0;
+            $amountTotal = max(0, $originalPrice - $discountAmount);
 
-            DB::transaction(function () use ($data, $memberType, $amountTotal, $invoiceId, $request, $paidAt, $qty) {
+            DB::transaction(function () use ($data, $memberType, $amountTotal, $invoiceId, $request, $paidAt, $qty, $status, $finalReference, $campaignToApply, $discountAmount) {
                 $transaction = Transaction::create([
                     'member_id' => null,
                     'created_by' => $request->user()?->id,
@@ -116,14 +135,22 @@ class VisitController extends Controller
                     'customer_email' => $data['customer_email'] ?? null,
                     'customer_phone' => $data['customer_phone'] ?? null,
                     'invoice_id' => $invoiceId,
-                    'status' => $data['status'],
+                    'status' => $status,
                     'amount_total' => $amountTotal,
                     'currency' => 'IDR',
                     'channel' => 'onsite',
+                    'campaign_id' => $campaignToApply?->id,
+                    'discount_amount' => $discountAmount,
+                    'duration_bonus' => 0,
+                    'is_renewal' => null,
                     'payment_method' => $data['payment_method'] ?? null,
-                    'payment_reference' => $data['payment_reference'] ?? null,
+                    'payment_reference' => $finalReference ?: null,
                     'paid_at' => $paidAt,
                 ]);
+
+                if ($campaignToApply) {
+                    $campaignToApply->increment('current_uses');
+                }
 
                 TransactionVisit::create([
                     'transaction_id' => $transaction->id,
@@ -140,9 +167,17 @@ class VisitController extends Controller
         }
 
         $memberType = MemberType::find($data['member_type_id']);
-        $amountTotal = $memberType?->pricing ?? 0;
+        $originalPrice = $memberType?->pricing ?? 0;
+        
+        $discountAmount = $campaignToApply ? $campaignToApply->calculateDiscount($originalPrice, $memberType?->id ?? 0) : 0;
+        $amountTotal = max(0, $originalPrice - $discountAmount);
+        
+        $durationBonus = 0;
+        if ($campaignToApply && $campaignToApply->discount_type === 'duration') {
+            $durationBonus = $campaignToApply->getDurationBonus($memberType?->id ?? 0);
+        }
 
-        DB::transaction(function () use ($data, $memberType, $amountTotal, $invoiceId, $request, $paidAt) {
+        DB::transaction(function () use ($data, $memberType, $originalPrice, $amountTotal, $invoiceId, $request, $paidAt, $status, $finalReference, $campaignToApply, $discountAmount, $durationBonus) {
             $member = Member::create([
                 'member_type_id' => $memberType?->id,
                 'name' => $data['customer_name'],
@@ -155,13 +190,13 @@ class VisitController extends Controller
                 'nim' => $data['nim'] ?? null,
                 'university' => $data['university'] ?? null,
                 'expired_at' => $data['expired_at'] ?? null,
-                'status' => $data['status'] === 'paid' ? 'active' : 'pending',
+                'status' => 'active',
                 'is_verified_student' => $memberType?->is_student ? (bool) ($data['is_verified_student'] ?? false) : false,
             ]);
 
-            if (! $member->expired_at && $memberType && $memberType->duration_days > 0) {
+            if (! $member->expired_at && $memberType && ($memberType->duration_days + $durationBonus) > 0) {
                 $member->update([
-                    'expired_at' => now()->addDays($memberType->duration_days)->startOfDay(),
+                    'expired_at' => now()->addDays($memberType->duration_days + $durationBonus)->startOfDay(),
                 ]);
             }
 
@@ -172,22 +207,30 @@ class VisitController extends Controller
                 'customer_email' => $member->email,
                 'customer_phone' => $member->phone,
                 'invoice_id' => $invoiceId,
-                'status' => $data['status'],
+                'status' => $status,
                 'amount_total' => $amountTotal,
                 'currency' => 'IDR',
                 'channel' => 'onsite',
+                'campaign_id' => $campaignToApply?->id,
+                'discount_amount' => $discountAmount,
+                'duration_bonus' => $durationBonus,
+                'is_renewal' => false,
                 'payment_method' => $data['payment_method'] ?? null,
-                'payment_reference' => $data['payment_reference'] ?? null,
+                'payment_reference' => $finalReference ?: null,
                 'paid_at' => $paidAt,
             ]);
+
+            if ($campaignToApply) {
+                $campaignToApply->increment('current_uses');
+            }
 
             TransactionMembership::create([
                 'transaction_id' => $transaction->id,
                 'member_id' => $member->id,
                 'member_type_id' => $memberType?->id,
                 'qty' => 1,
-                'unit_price' => $amountTotal,
-                'subtotal' => $amountTotal,
+                'unit_price' => $originalPrice,
+                'subtotal' => $originalPrice,
             ]);
         });
 
@@ -212,29 +255,29 @@ class VisitController extends Controller
     {
         $search = $request->string('q')->trim()->value();
 
-        $visits = TransactionVisit::query()
-            ->with(['transaction', 'memberType'])
-            ->whereHas('memberType', function ($memberTypeQuery) {
-                $memberTypeQuery->where('is_daily', true);
-            })
-            ->whereHas('transaction', function ($transactionQuery) use ($channel) {
-                $transactionQuery->where('channel', $channel);
-            })
-            ->when($search, function ($query, string $search) {
-                $query->whereHas('transaction', function ($transactionQuery) use ($search) {
-                    $transactionQuery->where('customer_name', 'like', '%' . $search . '%')
-                        ->orWhere('customer_email', 'like', '%' . $search . '%')
-                        ->orWhere('customer_phone', 'like', '%' . $search . '%')
-                        ->orWhere('invoice_id', 'like', '%' . $search . '%');
-                });
-            })
-            ->orderByDesc('created_at')
-            ->paginate(12)
-            ->withQueryString();
+        $transactions = Transaction::query()
+            ->with(['membershipItems.memberType', 'visitItems.memberType', 'eventRegistrations.event'])
+            ->where('channel', $channel);
+
+        if ($channel === 'online') {
+            $transactions->whereHas('visitItems');
+        }
+
+        $transactions = $transactions->when($search, function ($query, string $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', '%' . $search . '%')
+                  ->orWhere('customer_email', 'like', '%' . $search . '%')
+                  ->orWhere('customer_phone', 'like', '%' . $search . '%')
+                  ->orWhere('invoice_id', 'like', '%' . $search . '%');
+            });
+        })
+        ->orderByDesc('created_at')
+        ->paginate(12)
+        ->withQueryString();
 
         $mode = $channel === 'online' ? 'online' : 'onsite';
         $showAddButton = $mode === 'onsite';
 
-        return view('admin.membership.visits.index', compact('visits', 'search', 'mode', 'showAddButton'));
+        return view('admin.membership.visits.index', compact('transactions', 'search', 'mode', 'showAddButton'));
     }
 }
