@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\AgendaEvent;
 use App\Models\AgendaEventRegistration;
 use App\Models\Member;
+use App\Models\Transaction;
+use App\Services\XenditService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class EventRegistrationController extends Controller
@@ -33,6 +37,7 @@ class EventRegistrationController extends Controller
             'phone' => ['nullable', 'string', 'max:40', 'not_regex:/</'],
             'is_member' => ['required', 'in:0,1'],
             'member_identifier' => ['nullable', 'string', 'max:120', 'not_regex:/</'],
+            'promo_code' => ['nullable', 'string', 'max:50'],
         ];
 
         $customRules = $this->buildCustomRules($customFields);
@@ -59,21 +64,103 @@ class EventRegistrationController extends Controller
 
         $answers = $this->extractAnswers($request->input('custom', []), $customFields);
 
-        AgendaEventRegistration::create([
-            'agenda_event_id' => $event->id,
-            'member_id' => $memberId,
-            'name' => $this->sanitizeText($data['name']),
-            'email' => $data['email'] ? trim($data['email']) : null,
-            'phone' => $data['phone'] ? $this->sanitizeText($data['phone']) : null,
-            'is_member' => $isMember,
-            'member_identifier' => $memberIdentifier !== '' ? $memberIdentifier : null,
-            'event_price' => $event->price,
-            'answers' => $answers,
-        ]);
+        $answers = $this->extractAnswers($request->input('custom', []), $customFields);
+
+        $autoPromo = \App\Models\Campaign::getActiveAutoPromo('event', $event->id, false);
+        $voucher = null;
+        if (!empty($data['promo_code'])) {
+            $voucher = \App\Models\Campaign::where('code', strtoupper($data['promo_code']))->first();
+            if (!$voucher || !$voucher->isValidFor('event', $event->id, false)) {
+                return back()->withErrors(['promo_code' => 'Voucher tidak valid, kedaluwarsa, atau tidak berlaku untuk event ini.'])->withInput();
+            }
+        }
+
+        $campaignToApply = $voucher ?? $autoPromo;
+        $originalPrice = $event->amount;
+        $discountAmount = $campaignToApply ? $campaignToApply->calculateDiscount($originalPrice, $event->id) : 0;
+        $amountTotal = max(0, $originalPrice - $discountAmount);
+
+        $invoiceId = $this->generateInvoiceId();
+        
+        $transaction = null;
+        DB::transaction(function () use ($event, $data, $isMember, $memberIdentifier, $memberId, $answers, $invoiceId, $amountTotal, $campaignToApply, $discountAmount, &$transaction) {
+            $transaction = Transaction::create([
+                'member_id' => $memberId,
+                'customer_name' => $this->sanitizeText($data['name']),
+                'customer_email' => $data['email'] ? trim($data['email']) : null,
+                'customer_phone' => $data['phone'] ? $this->sanitizeText($data['phone']) : null,
+                'invoice_id' => $invoiceId,
+                'status' => 'pending',
+                'amount_total' => $amountTotal,
+                'currency' => 'IDR',
+                'channel' => 'online',
+                'campaign_id' => $campaignToApply?->id,
+                'discount_amount' => $discountAmount,
+                'duration_bonus' => 0,
+                'is_renewal' => null,
+                'payment_method' => null,
+                'expires_at' => now()->addDay(),
+            ]);
+
+            if ($campaignToApply) {
+                $campaignToApply->increment('current_uses');
+            }
+
+            AgendaEventRegistration::create([
+                'agenda_event_id' => $event->id,
+                'transaction_id' => $transaction->id,
+                'member_id' => $memberId,
+                'name' => $this->sanitizeText($data['name']),
+                'email' => $data['email'] ? trim($data['email']) : null,
+                'phone' => $data['phone'] ? $this->sanitizeText($data['phone']) : null,
+                'is_member' => $isMember,
+                'member_identifier' => $memberIdentifier !== '' ? $memberIdentifier : null,
+                'answers' => $answers,
+            ]);
+        });
+        
+        if ($transaction->amount_total > 0) {
+            try {
+                $xenditService = app(XenditService::class);
+                $invoice = $xenditService->createInvoice(
+                    $transaction,
+                    'Event Registration: ' . $event->title,
+                    route('events.register', ['event' => $event, 'status' => 'success']),
+                    route('events.register', ['event' => $event, 'status' => 'failed'])
+                );
+
+                $transaction->update([
+                    'gateway_payload' => $invoice,
+                    'payment_reference' => $invoice['id'] ?? null,
+                ]);
+
+                if (isset($invoice['invoice_url'])) {
+                    return redirect($invoice['invoice_url']);
+                }
+            } catch (\Exception $e) {
+                return redirect()
+                    ->route('events.register', $event)
+                    ->withErrors(['error' => 'Gagal memproses pembayaran: ' . $e->getMessage()]);
+            }
+        } else {
+            $transaction->update(['status' => 'paid', 'paid_at' => now()]);
+        }
 
         return redirect()
             ->route('events.register', $event)
             ->with('status', 'Pendaftaran berhasil. Tim kami akan menghubungi Anda.');
+    }
+
+    private function generateInvoiceId(): string
+    {
+        $prefix = 'INV-EV-' . now()->format('Ymd') . '-';
+
+        do {
+            $suffix = Str::upper(Str::random(6));
+            $invoiceId = $prefix . $suffix;
+        } while (Transaction::where('invoice_id', $invoiceId)->exists());
+
+        return $invoiceId;
     }
 
     private function sanitizeText(string $value): string

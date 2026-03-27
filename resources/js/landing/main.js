@@ -294,13 +294,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let isStudentMode = false;
 
   const membershipMap = new Map();
-  membershipOptions.forEach((option) => {
-    if (!option.dataset.id) return;
-    membershipMap.set(option.dataset.id, {
-      name: option.dataset.name || '',
-      price: Number(option.dataset.price || 0),
-      isStudent: option.dataset.isStudent === '1',
-      kind: option.dataset.kind || 'member',
+  membershipOpeners.forEach((opener) => {
+    const id = opener.dataset.membershipId;
+    if (!id) return;
+    membershipMap.set(id, {
+      name: opener.dataset.membershipName || '',
+      price: Number(opener.dataset.membershipPrice || 0),
+      isStudent: opener.dataset.membershipStudent === '1',
+      kind: opener.dataset.membershipKind || 'member',
     });
   });
 
@@ -309,6 +310,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return `Rp ${numberValue.toLocaleString('id-ID')}`;
   };
 
+  let renewalState = { isRenewal: false, discountAmount: 0, durationBonus: 0, finalPrice: null, campaignName: null };
+  let voucherState = { valid: false, discountAmount: 0, durationBonus: 0, finalPrice: null, campaignName: null };
+
   const updatePaymentSummary = () => {
     if (!membershipInput) return;
     const data = membershipMap.get(membershipInput.value);
@@ -316,7 +320,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const qtyInput = membershipForm?.querySelector('input[name="qty"]');
     const qty = isDailyMode ? Number(qtyInput?.value || 1) : 1;
-    const total = data.price * (qty || 1);
+    const originalTotal = data.price * (qty || 1);
+
+    const voucherCode = membershipForm?.querySelector('[data-voucher-input]')?.value.trim();
+    const activeState = !isDailyMode && voucherCode && voucherState.valid ? voucherState : renewalState;
+    const discountAmount = !isDailyMode && activeState.finalPrice !== null
+      ? Math.max(0, originalTotal - activeState.finalPrice)
+      : 0;
+    const total = discountAmount > 0 ? activeState.finalPrice : originalTotal;
     const method = membershipForm?.querySelector('input[name="payment_method"]:checked')?.value;
     const methodLabel = method === 'bank_transfer' ? 'Transfer Bank' : 'QRIS';
 
@@ -332,6 +343,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-payment-total]').forEach((el) => {
       el.textContent = formatCurrency(total);
     });
+
+    const discountRow = document.querySelector('[data-discount-row]');
+    const discountEl = document.querySelector('[data-payment-discount]');
+    if (discountRow && discountEl) {
+      if (!isDailyMode && discountAmount > 0) {
+        discountRow.classList.remove('hidden');
+        discountRow.classList.add('flex');
+        discountEl.textContent = '- ' + formatCurrency(discountAmount);
+      } else {
+        discountRow.classList.add('hidden');
+        discountRow.classList.remove('flex');
+      }
+    }
   };
 
   const updateStudentFields = (isStudent) => {
@@ -608,6 +632,150 @@ document.addEventListener('DOMContentLoaded', () => {
       const current = Number(stepIndicators.find((indicator) => indicator.classList.contains('bg-teal-600'))?.dataset?.stepIndicator || 1);
       const maxSteps = window.currentMaxSteps || 3;
       setStep(Math.max(current - 1, 1), maxSteps);
+    });
+  }
+
+  // NIK-based renewal & discount detection
+  const nikInput = membershipForm?.querySelector('[data-nik-input]');
+  const nikChecking = document.querySelector('[data-nik-checking]');
+  const renewalBanner = document.querySelector('[data-renewal-banner]');
+  const renewalBannerTitle = document.querySelector('[data-renewal-banner-title]');
+  const renewalBannerDesc = document.querySelector('[data-renewal-banner-desc]');
+  let nikCheckTimer = null;
+
+  const resetRenewalState = () => {
+    renewalState.isRenewal = false;
+    renewalState.discountAmount = 0;
+    renewalState.durationBonus = 0;
+    renewalState.finalPrice = null;
+    renewalState.campaignName = null;
+    if (renewalBanner) renewalBanner.classList.add('hidden');
+  };
+
+  const checkNik = async (nik) => {
+    const memberTypeId = membershipInput?.value;
+    if (!nik || !memberTypeId) { resetRenewalState(); return; }
+    if (nikChecking) nikChecking.classList.remove('hidden');
+    try {
+      const url = `/api/membership/check-nik?nik=${encodeURIComponent(nik)}&member_type_id=${encodeURIComponent(memberTypeId)}`;
+      const response = await fetch(url, { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error('Network error');
+      const result = await response.json();
+
+      renewalState.isRenewal = result.is_renewal;
+      renewalState.discountAmount = result.discount_amount || 0;
+      renewalState.durationBonus = result.duration_bonus || 0;
+      renewalState.finalPrice = result.discount_amount > 0 ? result.final_price : null;
+      renewalState.campaignName = result.campaign?.name || null;
+
+      if (renewalBanner) {
+        const hasActiveVoucher = voucherState.valid;
+        if (result.campaign && !hasActiveVoucher) {
+          const title = result.is_renewal ? 'Perpanjangan anggota terdeteksi' : 'Promo aktif!';
+          let desc = result.campaign.name;
+          if (result.duration_bonus > 0) {
+            desc += ` – bonus +${result.duration_bonus} hari`;
+          } else if (result.discount_amount > 0) {
+            desc += ` – hemat ${formatCurrency(result.discount_amount)}`;
+          }
+          if (renewalBannerTitle) renewalBannerTitle.textContent = title;
+          if (renewalBannerDesc) renewalBannerDesc.textContent = desc;
+          renewalBanner.classList.remove('hidden');
+        } else if (result.is_renewal) {
+          if (renewalBannerTitle) renewalBannerTitle.textContent = 'Perpanjangan keanggotaan';
+          if (renewalBannerDesc) renewalBannerDesc.textContent = hasActiveVoucher ? 'NIK terdaftar. Voucher aktif diterapkan.' : 'NIK terdaftar. Tidak ada promo aktif saat ini.';
+          renewalBanner.classList.remove('hidden');
+        } else {
+          renewalBanner.classList.add('hidden');
+        }
+      }
+      updatePaymentSummary();
+    } catch {
+      resetRenewalState();
+    } finally {
+      if (nikChecking) nikChecking.classList.add('hidden');
+    }
+  };
+
+  if (nikInput) {
+    nikInput.addEventListener('input', () => {
+      clearTimeout(nikCheckTimer);
+      const nik = nikInput.value.trim();
+      if (!nik) { resetRenewalState(); updatePaymentSummary(); return; }
+      nikCheckTimer = setTimeout(async () => {
+        const prevIsRenewal = renewalState.isRenewal;
+        await checkNik(nik);
+        const voucherCode = membershipForm?.querySelector('[data-voucher-input]')?.value.trim();
+        if (voucherCode && renewalState.isRenewal !== prevIsRenewal) checkVoucher(voucherCode);
+      }, 600);
+    });
+  }
+
+  // Voucher code validation
+  const voucherInput = membershipForm?.querySelector('[data-voucher-input]');
+  const voucherChecking = document.querySelector('[data-voucher-checking]');
+  const voucherFeedback = document.querySelector('[data-voucher-feedback]');
+  const voucherFeedbackText = document.querySelector('[data-voucher-feedback-text]');
+  let voucherCheckTimer = null;
+
+  const resetVoucherState = () => {
+    voucherState.valid = false;
+    voucherState.discountAmount = 0;
+    voucherState.durationBonus = 0;
+    voucherState.finalPrice = null;
+    voucherState.campaignName = null;
+    if (voucherFeedback) voucherFeedback.classList.add('hidden');
+  };
+
+  const checkVoucher = async (code) => {
+    const memberTypeId = membershipInput?.value;
+    const nik = membershipForm?.querySelector('[data-nik-input]')?.value.trim() || '';
+    if (!code || !memberTypeId) { resetVoucherState(); return; }
+    if (voucherChecking) voucherChecking.classList.remove('hidden');
+    try {
+      const url = `/api/membership/check-voucher?code=${encodeURIComponent(code)}&member_type_id=${encodeURIComponent(memberTypeId)}&nik=${encodeURIComponent(nik)}`;
+      const response = await fetch(url, { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error('Network error');
+      const result = await response.json();
+
+      voucherState.valid = result.valid;
+      voucherState.discountAmount = result.discount_amount || 0;
+      voucherState.durationBonus = result.duration_bonus || 0;
+      voucherState.finalPrice = result.valid && result.discount_amount > 0 ? result.final_price : null;
+      voucherState.campaignName = result.campaign?.name || null;
+
+      if (voucherFeedback && voucherFeedbackText) {
+        if (result.valid) {
+          voucherFeedback.className = 'mt-2 rounded-xl px-4 py-2.5 text-xs font-medium bg-teal-50 border border-teal-200 text-teal-700';
+          let text = `Voucher "${result.campaign?.name}"`;
+          if (result.duration_bonus > 0) {
+            text += ` – bonus +${result.duration_bonus} hari berhasil diterapkan!`;
+          } else if (result.discount_amount > 0) {
+            text += ` – hemat ${formatCurrency(result.discount_amount)} berhasil diterapkan!`;
+          } else {
+            text += ` berhasil diterapkan!`;
+          }
+          voucherFeedbackText.textContent = text;
+        } else {
+          voucherFeedback.className = 'mt-2 rounded-xl px-4 py-2.5 text-xs font-medium bg-rose-50 border border-rose-200 text-rose-600';
+          voucherFeedbackText.textContent = result.error || 'Voucher tidak valid.';
+        }
+        voucherFeedback.classList.remove('hidden');
+      }
+      updatePaymentSummary();
+    } catch {
+      resetVoucherState();
+    } finally {
+      if (voucherChecking) voucherChecking.classList.add('hidden');
+    }
+  };
+
+  if (voucherInput) {
+    voucherInput.addEventListener('input', () => {
+      clearTimeout(voucherCheckTimer);
+      const code = voucherInput.value.trim();
+      if (!code) { resetVoucherState(); updatePaymentSummary(); return; }
+      voucherCheckTimer = setTimeout(() => checkVoucher(code), 700);
     });
   }
 

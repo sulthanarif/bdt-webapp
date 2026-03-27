@@ -29,7 +29,12 @@
           @forelse ($transactions as $transaction)
             <tr class="text-slate-600">
               <td class="px-4 py-3 font-semibold text-slate-800">
-                {{ $transaction->invoice_id ?? '-' }}
+                <div class="flex flex-col gap-1">
+                  <span>{{ $transaction->invoice_id ?? '-' }}</span>
+                  @if(isset($transaction->gateway_payload['invoice_url']))
+                    <a href="{{ $transaction->gateway_payload['invoice_url'] }}" target="_blank" class="text-xs text-blue-600 hover:underline font-normal">Lihat Invoice &rarr;</a>
+                  @endif
+                </div>
               </td>
               <td class="px-4 py-3">
                 <p class="font-semibold text-slate-900">{{ $transaction->customer_name }}</p>

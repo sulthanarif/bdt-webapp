@@ -23,6 +23,10 @@ class Transaction extends Model
         'amount_total',
         'currency',
         'channel',
+        'campaign_id',
+        'discount_amount',
+        'duration_bonus',
+        'is_renewal',
         'payment_method',
         'payment_reference',
         'paid_at',
@@ -42,6 +46,11 @@ class Transaction extends Model
         return $this->belongsTo(Member::class);
     }
 
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -55,5 +64,10 @@ class Transaction extends Model
     public function visitItems(): HasMany
     {
         return $this->hasMany(TransactionVisit::class);
+    }
+
+    public function eventRegistrations(): HasMany
+    {
+        return $this->hasMany(AgendaEventRegistration::class);
     }
 }

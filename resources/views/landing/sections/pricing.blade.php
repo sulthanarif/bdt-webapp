@@ -45,6 +45,15 @@
               <div class="text-center mb-6 pt-2">
                 <h3 class="text-lg font-bold mb-1 {{ $isFeatured ? 'text-white' : 'text-slate-800' }}" style="{{ $fullTextStyle }}">{{ $memberType->name }}</h3>
                 <p class="text-xs {{ $isFeatured ? 'text-slate-400' : 'text-slate-500' }} mb-4" style="{{ $fullMutedStyle }}">{{ $subtitle }}</p>
+                
+                @if ($memberType->promo_badge_text)
+                  <div class="flex justify-center items-center gap-2 mb-1 opacity-70">
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-700">{{ $memberType->promo_badge_text }}</span>
+                    @if ($memberType->display_original)
+                        <span class="text-sm line-through" style="{{ $fullMutedStyle }}">Rp {{ $memberType->display_original }}k</span>
+                    @endif
+                  </div>
+                @endif
                 <div class="flex justify-center items-end gap-1">
                   <span class="text-sm font-medium opacity-60" style="{{ $fullMutedStyle }}">Rp</span>
                   <span class="text-4xl font-bold" style="{{ $isFullColor ? $fullTextStyle : $accentStyle }}">{{ $memberType->display_price }}</span>
@@ -70,7 +79,7 @@
                 @endforelse
               </ul>
 
-              <button type="button" data-membership-open data-membership-id="{{ $memberType->id }}" data-membership-name="{{ $memberType->name }}" data-membership-student="{{ $memberType->is_student ? '1' : '0' }}" data-membership-kind="{{ $isDaily ? 'ticket' : 'member' }}" class="w-full py-3 rounded-xl font-bold transition-colors text-center block" style="{{ $buttonStyle }}">
+              <button type="button" data-membership-open data-membership-id="{{ $memberType->id }}" data-membership-name="{{ $memberType->name }}" data-membership-student="{{ $memberType->is_student ? '1' : '0' }}" data-membership-kind="{{ $isDaily ? 'ticket' : 'member' }}" data-membership-price="{{ $memberType->pricing }}" class="w-full py-3 rounded-xl font-bold transition-colors text-center block" style="{{ $buttonStyle }}">
                 Daftar Sekarang
               </button>
             </div>
@@ -80,6 +89,16 @@
                 <div class="text-center mb-6 pt-2">
                   <h3 class="text-lg font-bold mb-1 text-slate-800">{{ $visitTicket['name'] }}</h3>
                   <p class="text-xs text-slate-500 mb-4">{{ $visitTicket['subtitle'] }}</p>
+
+                  @if (!empty($visitTicket['promo_badge_text']))
+                    <div class="flex justify-center items-center gap-2 mb-1 opacity-70">
+                      <span class="text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-700">{{ $visitTicket['promo_badge_text'] }}</span>
+                      @if (!empty($visitTicket['original_price']))
+                        <span class="text-sm line-through text-slate-500">Rp {{ $visitTicket['original_price'] }}k</span>
+                      @endif
+                    </div>
+                  @endif
+
                   <div class="flex justify-center items-end gap-1">
                     <span class="text-sm font-medium opacity-60">Rp</span>
                     <span class="text-4xl font-bold text-teal-700">{{ $visitTicket['price'] }}</span>
@@ -110,6 +129,16 @@
                 <div class="text-center mb-6 pt-2">
                   <h3 class="text-lg font-bold mb-1 text-slate-800">{{ $visitTicket['name'] }}</h3>
                   <p class="text-xs text-slate-500 mb-4">{{ $visitTicket['subtitle'] }}</p>
+
+                  @if (!empty($visitTicket['promo_badge_text']))
+                    <div class="flex justify-center items-center gap-2 mb-1 opacity-70">
+                      <span class="text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-700">{{ $visitTicket['promo_badge_text'] }}</span>
+                      @if (!empty($visitTicket['original_price']))
+                        <span class="text-sm line-through text-slate-500">Rp {{ $visitTicket['original_price'] }}k</span>
+                      @endif
+                    </div>
+                  @endif
+
                   <div class="flex justify-center items-end gap-1">
                     <span class="text-sm font-medium opacity-60">Rp</span>
                     <span class="text-4xl font-bold text-teal-700">{{ $visitTicket['price'] }}</span>

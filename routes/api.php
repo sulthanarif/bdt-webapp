@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/webhooks/xendit', [\App\Http\Controllers\Api\XenditWebhookController::class, 'handleInvoice']);
+
+Route::get('/membership/check-nik', [\App\Http\Controllers\Api\MembershipCheckController::class, 'checkNik']);
+Route::get('/membership/check-voucher', [\App\Http\Controllers\Api\MembershipCheckController::class, 'checkVoucher']);

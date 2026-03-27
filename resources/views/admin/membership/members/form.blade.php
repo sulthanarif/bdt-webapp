@@ -145,43 +145,7 @@
       </label>
 
       @if ($mode === 'create')
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Transaksi Manual</p>
-              <h3 class="text-lg font-semibold text-slate-900">Buat transaksi offline</h3>
-            </div>
-            <label class="inline-flex items-center gap-2 text-sm text-slate-600">
-              <input type="checkbox" name="create_transaction" value="1" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500">
-              Buat transaksi sekarang
-            </label>
-          </div>
-
-          <div class="mt-6 grid gap-6 md:grid-cols-2">
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-slate-700">Status Transaksi</label>
-              <select name="transaction_status" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-                <option value="pending">Pending</option>
-                <option value="paid">Paid</option>
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-slate-700">Metode Pembayaran</label>
-              <input type="text" name="payment_method" placeholder="Cash / Transfer / E-wallet" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-slate-700">Referensi Pembayaran</label>
-              <input type="text" name="payment_reference" placeholder="No. resi / catatan kasir" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-slate-700">Tanggal Bayar</label>
-              <input type="date" name="paid_at" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
-            </div>
-          </div>
-        </div>
+        <!-- Transaksi manual dihapus untuk menghindari redundansi. Semua transaksi harus melalui frontend public atau admin visits. -->
       @endif
 
       <div class="flex items-center gap-3">

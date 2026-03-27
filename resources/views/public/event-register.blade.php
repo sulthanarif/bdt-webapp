@@ -219,6 +219,14 @@
             </div>
           @endif
 
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-slate-700">Kode Voucher <span class="text-slate-400 font-normal">(Opsional)</span></label>
+            <input type="text" name="promo_code" value="{{ old('promo_code') }}" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm uppercase font-mono focus:border-teal-500 focus:ring-2 focus:ring-teal-200" placeholder="Ketik kode jika ada">
+            @error('promo_code')
+              <p class="text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+          </div>
+
           <div class="flex flex-wrap gap-3">
             <button type="submit" class="rounded-xl bg-teal-700 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-teal-800">Kirim Pendaftaran</button>
           </div>

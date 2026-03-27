@@ -60,36 +60,58 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-200">
-          @forelse ($visits as $visit)
+          @forelse ($transactions as $trx)
+            @php
+                 $paketName = '-';
+                 $genderQty = '-';
+                 $visitDate = $trx->created_at->format('d M Y');
+                 
+                 if ($trx->visitItems->isNotEmpty()) {
+                     $item = $trx->visitItems->first();
+                     $paketName = $item->memberType ? $item->memberType->name : 'Tiket Harian';
+                     $genderQty = ucfirst($item->gender ?? '-') . ' • ' . $item->qty;
+                     $visitDate = $item->visit_date ? \Carbon\Carbon::parse($item->visit_date)->format('d M Y') : $visitDate;
+                 } elseif ($trx->membershipItems->isNotEmpty()) {
+                     $item = $trx->membershipItems->first();
+                     $paketName = $item->memberType ? $item->memberType->name : 'Membership';
+                     $genderQty = 'Member • ' . $item->qty;
+                 } elseif ($trx->eventRegistrations->isNotEmpty()) {
+                     $item = $trx->eventRegistrations->first();
+                     $paketName = $item->event ? $item->event->title : 'Event';
+                     $genderQty = '- • ' . $item->qty;
+                 }
+            @endphp
             <tr class="text-slate-600">
               <td class="px-4 py-3">
-                <p class="font-semibold text-slate-900">{{ $visit->transaction?->customer_name ?? '-' }}</p>
-                <p class="text-xs text-slate-400">{{ $visit->transaction?->customer_email ?? '-' }}</p>
+                <p class="font-semibold text-slate-900">{{ $trx->customer_name ?? '-' }}</p>
+                <p class="text-xs text-slate-400">{{ $trx->customer_email ?? '-' }}</p>
               </td>
               <td class="px-4 py-3">
-                {{ $visit->transaction?->customer_phone ?? '-' }}
+                {{ $trx->customer_phone ?? '-' }}
+              </td>
+              <td class="px-4 py-3 font-medium">
+                {{ $paketName }}
               </td>
               <td class="px-4 py-3">
-                {{ $visit->memberType?->name ?? 'Kunjungan Harian' }}
+                {{ $genderQty }}
               </td>
               <td class="px-4 py-3">
-                {{ ucfirst($visit->gender ?? '-') }} • {{ $visit->qty }}
+                  <a href="{{ route('admin.transactions.show', $trx) }}" class="text-teal-600 hover:underline font-medium">
+                    {{ $trx->invoice_id }}
+                  </a>
               </td>
               <td class="px-4 py-3">
-                {{ $visit->transaction?->invoice_id ?? '-' }}
-              </td>
-              <td class="px-4 py-3">
-                @if (($visit->transaction?->status ?? 'pending') === 'paid')
+                @if ($trx->status === 'paid')
                   <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Paid</span>
                 @else
                   <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Pending</span>
                 @endif
               </td>
               <td class="px-4 py-3">
-                {{ $visit->visit_date?->format('d M Y') ?? '-' }}
+                {{ $visitDate }}
               </td>
               <td class="px-4 py-3 text-right font-semibold text-slate-800">
-                Rp {{ number_format($visit->transaction?->amount_total ?? 0, 0, ',', '.') }}
+                Rp {{ number_format($trx->amount_total ?? 0, 0, ',', '.') }}
               </td>
             </tr>
           @empty
@@ -97,7 +119,7 @@
               <td colspan="8" class="px-4 py-10 text-center text-sm text-slate-500">
                 {{ $mode === 'online'
                   ? 'Belum ada transaksi tiket harian online.'
-                  : 'Belum ada transaksi kunjungan di tempat. Tambahkan data baru untuk loket.' }}
+                  : 'Belum ada transaksi di loket. Tambahkan data baru untuk mencatat penjualan di tempat.' }}
               </td>
             </tr>
           @endforelse
@@ -106,7 +128,7 @@
     </div>
 
     <div>
-      {{ $visits->links() }}
+      {{ $transactions->links() }}
     </div>
   </div>
 @endsection
